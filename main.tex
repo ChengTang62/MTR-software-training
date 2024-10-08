@@ -1,0 +1,195 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{MedTechResolve Onboarding Training}
+\author{Cheng Tang}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+The team will be using the Robot Operating System widely. This onboarding document is designed to get you familiar and comfortable with the concepts and gain some hands-on experience with common tools involved in working with the ROS system, particularly for robotic manipulators. By the end of this training, you will have an established foundation to start contributing to the team's project. An overview of common terminologies and practices regarding robot manipulators and human-robot interaction will be given from both hardware and software aspects.
+
+\subsection{Goals of the Training}
+\begin{itemize}
+    \item Understand the basic principles of robotic manipulation.
+    \item Get familiar with the hardware and software tools used.
+    \item Learn how to safely operate and troubleshoot the robot.
+    \item Leverage the Robot Operating System 2 (ROS 2).
+\end{itemize}
+
+\section{Common Terminologies}
+This section covers important terms and concepts that you will encounter when working with robotic manipulators. Familiarity with these terms is essential for effective communication and understanding of robot systems.
+
+\begin{itemize}
+    \item \textbf{End Effector}: 
+    The device attached to the end of a robotic arm that interacts with the environment. End effectors can vary depending on the task the robot is designed to perform, such as grippers for picking up objects, welding torches for industrial welding, or specialized tools for delicate surgical procedures. Selection of the right end effector is critical to the success of the robot in accomplishing its intended task.
+
+    \item \textbf{Degrees of Freedom (DOF)}: 
+    The number of independent movements a robot can make, often corresponding to the number of joints in a manipulator. Each degree of freedom allows motion in one of the following: rotational or translational movements along an axis. For example, a typical 6-DOF robotic arm can move in three translational directions (x, y, z) and rotate around three axes (roll, pitch, yaw). The higher the DOF, the more flexible and adaptable the robot is, but with worse null space issues.
+
+    \item \textbf{Kinematics}: 
+    Kinematics is the study of motion without considering the forces that cause it. In robotics, it refers to how the joints of a robot move and the relationship between joint configurations and the position of the end effector. 
+    \begin{itemize}
+        \item \textbf{Forward Kinematics}: 
+        The calculation of the position and orientation of the robot's end effector based on known joint angles. This is essential for tasks like visualizing the robot’s position in space.
+        \item \textbf{Inverse Kinematics (IK)}: 
+        The process of determining the joint angles required to achieve a desired position and orientation of the end effector. IK is used for tasks where the robot must reach specific points in space, such as picking up an object at a certain location.
+    \end{itemize}
+    
+    \item \textbf{Trajectory}: 
+    A planned series of configurations that the robot follows over time, often represented as a sequence of joint positions or end effector positions. Trajectory planning ensures the robot moves smoothly from one position to another while respecting constraints like joint limits or obstacles. These trajectories can be optimized for speed, energy efficiency, or precision.
+
+    \item \textbf{Joint Space}: 
+    The space that describes a robot's configuration in terms of its joint angles or displacements. When a robot operates in joint space, movements are defined by changing the positions of its individual joints. This is useful for precise control over each joint's behavior but can be harder to visualize in terms of end effector motion.
+
+    \item \textbf{Cartesian Space}: 
+    Describes the robot's motion in a 3D coordinate system (x, y, z), often concerning the position and orientation of the end effector. When working in Cartesian space, the robot is controlled by specifying the position and orientation of the end effector, allowing easier coordination of complex tasks like reaching into confined spaces or moving along specific paths.
+
+    \item \textbf{Path Planning}: 
+    The process of generating a path for the robot to follow, from its current configuration to a desired target configuration. Path planning often involves ensuring that the robot avoids obstacles, respects joint limits, and adheres to motion constraints. Modern path planning algorithms, such as Rapidly-Exploring Random Trees (RRT) or Probabilistic Roadmaps (PRM), are used in complex environments.
+
+    \item \textbf{Impedance Control}: 
+    A control strategy used in robotic manipulation that regulates the dynamic interaction between the robot and its environment. Instead of commanding a specific position or force, impedance control adjusts the robot’s stiffness, damping, and inertia to allow compliant and flexible interactions. For example, when assembling parts, the robot can "give" slightly when resistance is met, allowing it to adapt to small positional errors.
+
+    \item \textbf{Collision Detection}: 
+    A safety feature in robotic systems where sensors or software algorithms detect when the robot is at risk of colliding with an object in its environment. If a potential collision is detected, the robot can stop its motion or take corrective action to avoid damage. Common techniques involve proximity sensors, force feedback, or the use of pre-defined virtual boundaries.
+
+    \item \textbf{Gripper}: 
+    A type of end effector specifically designed to grasp and manipulate objects. Grippers can be as simple as two parallel fingers, or as complex as multi-fingered hands designed to replicate human dexterity. The choice of gripper depends on the shape, size, and material of the objects the robot needs to handle.
+
+    \item \textbf{Teach Pendant}: 
+    A handheld control device used to manually guide and program a robot. Teach pendants typically feature joysticks or buttons that allow an operator to move the robot through different poses and record these positions for later playback. They are commonly used in industrial environments for programming repetitive tasks.
+
+    \item \textbf{Singularity}: 
+    A condition in which a robot loses certain degrees of freedom and can no longer move in specific directions, usually due to the alignment of its joints in a problematic configuration. At a singularity, small movements in joint space can result in unpredictable, large movements in Cartesian space. Robots need to avoid singularities to maintain smooth and predictable motion.
+
+    \item \textbf{Joint Limits}: 
+    The physical or software-defined limits on how far a robot’s joints can move. Respecting joint limits is crucial to prevent damage to the robot and its environment. Joint limits can be angular (for rotational joints) or linear (for prismatic joints), and they are often specified by the manufacturer of the robotic arm.
+
+    \item \textbf{Payload}: 
+    The maximum weight or force that a robot can safely handle at its end effector. Exceeding the payload can result in reduced performance, increased wear on the robot, and potential safety hazards. Payload capacities vary depending on the type of manipulator, and choosing the right robot for the task requires understanding the payload requirements.
+
+    \item \textbf{Work Envelope}: 
+    The total area or volume in which a robot can operate. This is determined by the robot’s mechanical structure and joint limits. The work envelope is typically visualized as a 3D space that encompasses all reachable points by the end effector, and it defines the spatial limits of the robot's effective workspace.
+
+    \item \textbf{Feedback Control}: 
+    A control system that continuously monitors sensor data (e.g., joint positions, velocities, or forces) to adjust the robot's actions in real-time. This feedback allows the robot to correct for errors, adapt to changes in the environment, and perform precise operations. Common feedback control systems include Proportional-Integral-Derivative (PID) controllers and Model Predictive Control (MPC).
+\end{itemize}
+
+\section{Software Overview}
+\subsection{Robot Operating System (ROS)}
+We use ROS as the primary middleware for robot control. You will need to familiarize yourself with the following components:
+\begin{itemize}
+    \item ROS 2 overview and installation.
+    \item Nodes, topics, services, and actions in ROS.
+    \item MoveIt for planning and controlling the robot.
+\end{itemize}
+
+\subsection{Development Tools}
+\begin{itemize}
+    \item \textbf{Gazebo}: For simulating the robot manipulator.
+    \item \textbf{RViz}: For visualizing robot states and trajectories.
+    \item \textbf{Programming Languages}: Python and C++ for writing robot control scripts.
+\end{itemize}
+
+\subsection{Impedance Control}
+
+\section{Installation}
+In this section, you will be setting up your system environment for working with ROS 2, followed by instructions on how to set up ROS 2 by referring to the official installation page.
+
+To work with ROS 2, it is recommended to use Ubuntu 22.04 LTS. You have a few options for setting up Ubuntu listed below.
+
+\subsection{Native Ubuntu Installation (recommended)}
+\textbf{Native installation} means installing Ubuntu directly onto your hardware, either as the primary OS or alongside your current OS in a dual-boot setup. This usually gives better performance in comparison, as there is no overhead from running virtual machines or containers.
+
+\subsection{Virtual Machine (VM)}
+A \textbf{Virtual Machine (VM)} allows you to run Ubuntu within virtualization software like VirtualBox, VMware, or Parallels, on top of your existing operating system. However, virtualization introduces overhead, also requiring significant system resources, and can struggle with hardware-level tasks or real-time system requirements. This is not a long-term plan, so be prepared to switch to native Ubuntu eventually.
+
+\subsection{Docker for Ubuntu (Containerization)}
+\textbf{Docker} allows you to run Ubuntu and ROS 2 in a containerized environment. Containers share the host OS kernel but provide isolated environments for development. Docker is highly efficient due to its minimal overhead compared to VMs. 
+It is much less handy when it comes to GUIs such as RViz or Gazebo due to the complexity of configuring graphical interfaces inside containers. If you are not already an expert in Docker, it will also take time to get comfortable with it, particularly when managing environments, volumes, and networking, etc.
+
+\subsection{ROS 2 Installation}
+After successfully installing and setting up Ubuntu, you are now ready to install ROS 2. Follow the ROS 2 installation guide for the Humble Hawksbill release. 
+
+Visit the following URL for the latest steps to install ROS 2:
+\begin{itemize}
+    \item \url{https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html}
+\end{itemize}
+
+\subsubsection{Post-installation Setup}
+After completing the ROS 2 installation, ensure that you:
+\begin{itemize}
+    \item Source the ROS 2 setup script:
+    \begin{verbatim}
+    echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+    source ~/.bashrc
+    \end{verbatim}
+    \item Verify the installation by running:
+    \begin{verbatim}
+    ros2 --help
+    \end{verbatim}
+\end{itemize}
+
+By following the official installation guide and the post-installation steps, you will have ROS 2 fully set up on your system and ready for use.
+
+\section{Running MoveIt for Kinova Gen3}
+In this section, we will provide instructions on how to integrate the Kinova Gen3 robotic arm with MoveIt for motion planning and control. MoveIt is a widely used framework in the ROS ecosystem, providing tools for motion planning, manipulation, 3D perception, and control, while Kinova Gen3 offers a versatile robotic arm platform that can be controlled in both real and simulated environments.
+
+Fortunately, Kinova has released a MoveIt setup in ROS 2 already. So your task will be to simply run this repo to control the robot in simulation. After successfully completing this bootcamp, you are ready to join our workforce!
+
+\subsection{Running MoveIt in Simulation}
+The official ROS 2 packages for Kinova robotic arms, including the Gen3, are available in the \texttt{ros2\_kortex} repository. This package provides the drivers, URDF models, and necessary interfaces for controlling the Kinova Gen3 arm. You can find the repository here:
+\begin{itemize}
+    \item \url{https://github.com/Kinovarobotics/ros2_kortex}
+\end{itemize}
+
+This repository includes the Kinova ROS 2 driver, hardware interfaces, and simulation configurations using Gazebo, as well as the MoveIt config, which are all structured and ready to be used. Follow the instructions provided in the repo as they are very well written. 
+
+\subsection{Performing Pick-and-Place Tasks in Gazebo with MoveIt}
+Once you have successfully set up and launched MoveIt in the Gazebo simulation, the next task is to perform pick-and-place operations. This will involve spawning objects in the Gazebo environment and programming the robot to pick them up and place them at designated locations using MoveIt for motion planning.
+
+\subsubsection{Step 1: Spawning Objects in Gazebo}
+To simulate a pick-and-place task, you need to spawn objects into the Gazebo environment. These objects can represent the items you want the Kinova Gen3 arm to interact with. Here is an outline of how to spawn an object:
+\begin{itemize}
+    \item Use the \texttt{gazebo\_ros\_spawn\_model} service to spawn objects into the Gazebo world. You can use standard ROS packages such as \texttt{gazebo\_ros} or create custom URDF or SDF files for your objects.
+    \item Look up the command to spawn a box in Gazebo or simply add it in the GUI. You can use a default model that comes with the Gazebo package.
+    \item Make sure the objects are positioned within the reachable workspace of the Kinova Gen3 robotic arm.
+\end{itemize}
+
+\subsubsection{Step 2: Programming Pick-and-Place with MoveIt}
+Now that the objects are spawned in the Gazebo simulation, you can control the Kinova Gen3 arm to perform the pick-and-place task. Using MoveIt’s motion planning and control features, you can plan a trajectory that picks up the object and places it in a designated location. MoveIt is a very well-known library and has great support from the community. How to leverage the library will be left as an exercise. The answer should be very easy to find from any online resource.
+
+\textbf{Steps to execute the pick-and-place task:}
+\begin{itemize}
+    \item \textbf{Move the End Effector to the Pick Position:} Use MoveIt’s RViz interface or Python/C++ API to plan a trajectory that moves the robot’s end effector above the object to be picked.
+    \item \textbf{Grasp the Object:} Program the robot’s end effector to close around the object (if using a gripper). For this, you may need to publish commands to the gripper’s controller.
+    \item \textbf{Move to the Place Position:} Plan another trajectory using MoveIt to move the robot’s end effector, now holding the object, to the location where it needs to be placed.
+    \item \textbf{Release the Object:} Once the robot reaches the target position, open the gripper to release the object.
+\end{itemize}
+
+\subsubsection{Visualizing and Debugging in RViz}
+While executing the pick-and-place task, use RViz to visualize the robot’s movements. This helps ensure that the robot's planned trajectories are safe and accurate. You can interactively set waypoints in RViz and observe the robot's behavior as it picks up and places objects in the Gazebo simulation.
+
+\section{Conclusion}
+Congratulations! You now have a functioning Linux environment with ROS 2 installed, along with the Kinova arm and MoveIt setup running in simulation, which we will be using for our project. Welcome to the team, and good luck.
+
+\section{Further Reading}
+For your interests and knowledge, here are some resources you are welcome to look into.
+\begin{itemize}
+    \item Official ROS documentation: \url{https://docs.ros.org/en/humble/Tutorials.html}. ROS is a whole can of sweet worms, and they will never be explored enough. You will always find a new tutorial nested inside a tutorial.
+    \item MoveIt tutorials: \url{https://moveit.ros.org/documentation/tutorials/}. One day you will (hopefully) need to learn how to set up MoveIt for a robot yourself.
+    \item Cartesian Impedance Controller:
+    \url{https://github.com/matthias-mayr/Cartesian-Impedance-Controller}. Cartesian impedance control will probably be the most widely used control we use for the project. Impedance control is paramount for human-robot interaction, and operating in Cartesian space allows the robot to perform tasks. You may want to look into the repo and learn more about the theory behind it.
+    \item More about robotics, human-robot interaction, computer vision, natural language processing, decision making, planning, and control. Go ahead into the wild of robotics and appreciate its beauty yourself.
+\end{itemize}
+
+\end{document}
